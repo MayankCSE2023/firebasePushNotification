@@ -2,9 +2,11 @@ package com.example.pushnotification
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -22,7 +24,7 @@ class MyFirebaseNotificationService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         Log.i(TAG, "new FCM token created: $token")
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         createNotificationChannel(notificationManager)
     }
 
@@ -30,15 +32,24 @@ class MyFirebaseNotificationService : FirebaseMessagingService() {
         val title = remoteMessage.notification?.title
         val body = remoteMessage.notification?.body
 
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        // Create an intent to launch the MainActivity
+        val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent,
+            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
+
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle(title)
             .setContentText(body)
             .setAutoCancel(true)
+            .setContentIntent(pendingIntent) // Set the pending intent
 
         notificationManager.notify(DEFAULT_NOTIFICATION_ID, notificationBuilder.build())
     }
+
 
     private fun createNotificationChannel(notificationManager: NotificationManager) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

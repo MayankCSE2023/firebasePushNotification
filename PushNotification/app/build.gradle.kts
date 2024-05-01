@@ -62,10 +62,12 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
     implementation("com.google.firebase:firebase-analytics")
     // messaging
-    implementation("com.google.firebase:firebase-messaging-ktx:23.4.1")
-
+    //implementation("com.google.firebase:firebase-messaging-ktx:23.4.1")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
+    implementation("com.google.firebase:firebase-messaging:23.0.0")
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.firebase.messaging)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
